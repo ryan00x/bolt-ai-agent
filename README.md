@@ -1,6 +1,6 @@
-# App Agent & Assistant Template (Bolt for Python)
+# AI Agent App Template (Bolt for Python)
 
-This Bolt for Python template demonstrates how to build [Agents & Assistants](https://api.slack.com/docs/apps/ai) in Slack.
+This Bolt for Python template demonstrates how to build [AI Apps](https://docs.slack.dev/ai/) in Slack.
 
 ## Setup
 Before getting started, make sure you have a development workspace where you have permissions to install apps. If you don’t have one setup, go ahead and [create one](https://slack.com/create).
@@ -17,20 +17,25 @@ Join the [Slack Developer Program](https://api.slack.com/developer-program) for 
 4. Review the configuration and click *Create*
 5. Click *Install to Workspace* and *Allow* on the screen that follows. You'll then be redirected to the App Configuration dashboard.
 
-#### Environment Variables
+### Environment Variables
+
 Before you can run the app, you'll need to store some environment variables.
 
-1. Open your app configuration page from this list, click **OAuth & Permissions** in the left hand menu, then copy the Bot User OAuth Token. You will store this in your environment as `SLACK_BOT_TOKEN`.
-2. Click **Basic Information** from the left hand menu and follow the steps in the App-Level Tokens section to create an app-level token with the `connections:write` scope. Copy this token. You will store this in your environment as `SLACK_APP_TOKEN`.
 
+1. Rename `.env.sample` to `.env`.
+2. Open your apps setting page from [this list](https://api.slack.com/apps), click _OAuth & Permissions_ in the left hand menu, then copy the _Bot User OAuth Token_ into your `.env` file under `SLACK_BOT_TOKEN`.
 ```zsh
-# Replace with your app token and bot token
-# For Windows OS, env:SLACK_BOT_TOKEN = <your-bot-token> works
-export SLACK_BOT_TOKEN=<your-bot-token>
-export SLACK_APP_TOKEN=<your-app-token>
-# This sample uses OpenAI's API by default, but you can switch to any other solution!
-export OPENAI_API_KEY=<your-openai-api-key>
+SLACK_BOT_TOKEN=YOUR_SLACK_BOT_TOKEN
 ```
+3. Click _Basic Information_ from the left hand menu and follow the steps in the _App-Level Tokens_ section to create an app-level token with the `connections:write` scope. Copy that token into your `.env` as `SLACK_APP_TOKEN`.
+```zsh
+SLACK_APP_TOKEN=YOUR_SLACK_APP_TOKEN
+```
+4. Save your OpenAI key into `.env` under `OPENAI_API_KEY`.
+```zsh
+OPENAI_API_KEY=YOUR_OPEN_API_KEY
+```
+
 
 ### Setup Your Local Project
 ```zsh
@@ -50,6 +55,8 @@ pip install -r requirements.txt
 # Start your local server
 python3 app.py
 ```
+
+Start talking to the bot! Start a new DM or thread and click the feedback button when it responds.
 
 #### Linting
 ```zsh
@@ -72,7 +79,17 @@ black .
 
 ### `/listeners`
 
-Every incoming request is routed to a "listener". Inside this directory, we group each listener based on the Slack Platform feature used, so `/listeners/events` handles incoming events, `/listeners/shortcuts` would handle incoming [Shortcuts](https://api.slack.com/interactivity/shortcuts) requests, and so on.
+Every incoming request is routed to a "listener". This directory groups each listener based on the Slack Platform feature used, so `/listeners/events` handles incoming events, `/listeners/shortcuts` would handle incoming [Shortcuts](https://docs.slack.dev/interactivity/implementing-shortcuts/) requests, and so on.
+
+**`/listeners/assistant`**
+
+Configures the new Slack Assistant features, providing a dedicated side panel UI for users to interact with the AI chatbot. This module includes:
+
+`assistant.py`, which contains two listeners:
+*  The `@assistant.thread_started` listener receives an event when users start new app thread.
+*  The `@assistant.user_message` listener processes user messages in app threads or from the app **Chat** and **History** tab.
+
+`ai/llm_caller.py`, which handles OpenAI API integration and message formatting. It includes the `call_llm()` function that sends conversation threads to OpenAI's models.
 
 ## App Distribution / OAuth
 
@@ -80,7 +97,7 @@ Only implement OAuth if you plan to distribute your application across multiple 
 
 When using OAuth, Slack requires a public URL where it can send requests. In this template app, we've used [`ngrok`](https://ngrok.com/download). Checkout [this guide](https://ngrok.com/docs#getting-started-expose) for setting it up.
 
-Start `ngrok` to access the app on an external network and create a redirect URL for OAuth. 
+Start `ngrok` to access the app on an external network and create a redirect URL for OAuth.
 
 ```
 ngrok http 3000

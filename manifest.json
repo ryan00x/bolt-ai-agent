@@ -1,6 +1,6 @@
 {
   "display_information": {
-    "name": "Bolt Python Assistant"
+    "name": "Bolt Python AI Agent"
   },
   "features": {
     "app_home": {
@@ -9,22 +9,21 @@
       "messages_tab_read_only_enabled": false
     },
     "bot_user": {
-      "display_name": "Bolt Python Assistant",
+      "display_name": "Bolt Python AI Agent",
       "always_online": false
     },
     "assistant_view": {
-      "assistant_description": "Hi, I am an assistant built using Bolt for Python. I am here to help you out!",
+      "assistant_description": "Hi, I am an agent built using Bolt for Python. I am here to help you out!",
       "suggested_prompts": []
     }
   },
   "oauth_config": {
     "scopes": {
       "bot": [
+        "app_mentions:read",
         "assistant:write",
-        "channels:join",
         "im:history",
-        "channels:history",
-        "groups:history",
+        "channels:read",
         "chat:write"
       ]
     }
@@ -34,7 +33,8 @@
       "bot_events": [
         "assistant_thread_context_changed",
         "assistant_thread_started",
-        "message.im"
+        "message.im",
+        "app_mention"
       ]
     },
     "interactivity": {
